@@ -17,10 +17,12 @@ var _combine_input = function () {
     
 };	// var _combine_input = function () {
 
+_attr_list_count = 0;
+
 var _calc_pearson_correlation = function () {
     //var _result = "";
     var _attr_list = [];
-    var _attr_list_count = 0;
+    _attr_list_count = 0;
     var _panel = $(".file-process-framework");
     
     var _csv_lines = _panel.find("#input_data").val().trim().split("\n");
@@ -193,7 +195,8 @@ var _draw_result_table = function () {
         _colspan = 1;
     }
     
-    var _table = $('<div style="display:inline-block;"><div class="caption" style="text-align:center;display:block">相關分析</div>'
+    var _table = $('<div style="display:inline-block;">'
+        + '<div class="caption" style="text-align:center;display:block">相關分析</div>'
         + '<table border="1" cellpadding="0" cellspacing="0">'
         //+ '<caption>' + "相關分析" + '</caption>'
         + '<thead><tr class="x-attr"><th colspan="' + _colspan + '" class="right-border-bold"></th></tr></thead>'
@@ -373,6 +376,10 @@ var _draw_result_table = function () {
             _note.append('<div>' + _i + '. 在顯著水準為' + _s + '時(雙尾)，相關顯著。</div>');
         }
     }
+    
+    // ------------------------
+    
+    _create_conclusion(_result_div).appendTo(_result_div);
     
     // ------------------------
     
