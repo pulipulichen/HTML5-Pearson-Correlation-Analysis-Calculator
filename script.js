@@ -604,7 +604,11 @@ var _create_conclusion = function (_result_div) {
     
     // --------------------------
     var _sig_pair_low = [];
+    var _low = [];
+    
+    
     _result_div.find('[correlation="low"][significant="true"]').each(function (_i, _td_r) {
+        //console.log(1111);
         _td_r = $(_td_r);
         var _x_var = _td_r.attr("x_var");
         var _y_var = _td_r.attr("y_var");
@@ -614,7 +618,14 @@ var _create_conclusion = function (_result_div) {
         
         var _desc = _x_var + "與" + _y_var;
         
-        //_null.push(_desc);
+        if (_dir === "plus") {
+            _desc += "具有顯著的低度正相關";
+        }
+        else {
+            _desc += "具有顯著的低度負相關";
+        }
+        
+        _low.push(_desc);
         
         _sig_pair_low.push({
             x_var: _x_var.trim(),
@@ -623,6 +634,18 @@ var _create_conclusion = function (_result_div) {
             sig: _sig
         });
     });
+    
+    if (_sig_pair_low.length > 0) {
+        
+        if (_result.length > 1  && _sig_pair_high.length > 0 && _sig_pair_middle.length > 0) {
+           // console.log(222);
+            _result.push("此外，");
+        }
+
+        var _low_desc = _low.join("；") + "，但因為相關係數過低，僅供參考。";
+
+        _result.push(_low_desc);
+    }
     
     // ------------------------------
     
@@ -682,7 +705,7 @@ var _create_conclusion = function (_result_div) {
         _result.push(_desc);
     }
     
-    if (_result.length === 1) {
+    if (_result.length < 2) {
         _result = [];
     }
     else {
@@ -756,13 +779,13 @@ var _create_conclusion = function (_result_div) {
     // pair result
     
     var _pair_result = $('<div><hr />'
-        + '<div class="high">顯著且高度或中度相關，非常具有參考價值：'
+        + '<div class="high">相關分析中顯著且高度或中度相關，非常具有參考價值：'
         + '<table border="1" cellpadding="0" cellspacing="0" class="sig-table group0"><thead><tr><td>變數x</td><td>變數y</td><td>r</td><td>顯著</td></tr></thead><tbody></tbody></table>'
         + '</div>'
-        + '<div class="middle">高度或中度相關，仍具有參考價值：'
+        + '<div class="middle">相關分析中高度或中度相關，仍具有參考價值：'
         + '<table cellpadding="0" cellspacing="0"  border="1" class="sig-table group1"><thead><tr><td>變數x</td><td>變數y</td><td>r</td><td>顯著</td></tr></thead><tbody></tbody></table>'
         + '</div>'
-        + '<div class="low">低度或無相關，參考價值不大：'
+        + '<div class="low">相關分析中低度或無相關，參考價值不大：'
         + '<table cellpadding="0" cellspacing="0"  border="1" class="sig-table group2"><thead><tr><td>變數x</td><td>變數y</td><td>r</td><td>顯著</td></tr></thead><tbody></tbody></table></div>'
         + '</div>').appendTo(_return_div);
     
