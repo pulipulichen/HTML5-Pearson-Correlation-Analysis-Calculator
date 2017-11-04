@@ -84,6 +84,9 @@ table td {
 .analyze-result .left-border-none {
     border-left-width: 0 !important;
 }
+.analyze-result .bottom-border-none {
+    border-bottom-width: 0 !important;
+}
 .analyze-result .bottom-border-thin,
 .analyze-result tr.bottom-border-thin td,
 .analyze-result tr.bottom-border-thin th {
@@ -102,6 +105,9 @@ table td {
 
 .analyze-result .top-border-thin {
     border-top-width: 1px;
+}
+.analyze-result .top-border-none {
+    border-top-width: 0px;
 }
 
 .analyze-result .row.n > td {

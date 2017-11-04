@@ -121,6 +121,7 @@ var _is_variable_selected = function (_attr) {
 };
 
 _data = {};
+_cox_stuart_result = null;
 
 var _get_attr_list = function () {
     var _attr_list = [];
@@ -379,7 +380,20 @@ var _draw_result_table = function () {
     
     // ------------------------
     
-    _create_conclusion(_result_div).appendTo(_result_div);
+    if (_attr_list_count === 1 && $("#input_test_of_trend:checked").length === 1) {
+        
+        for (var _attr_name in _data) {
+            if (_attr_name === "time_index") {
+                continue;
+            }
+            else {
+                _cox_stuart_result = _test_of_trend_cox_stuart(_data[_attr_name]);
+                _result_div.append('<br />');
+                _result_div.append(_cox_stuart_result.table);
+                break;
+            }
+        }
+    }
     
     // ------------------------
     
@@ -578,7 +592,8 @@ var _create_conclusion = function (_result_div) {
     
     if (_middle.length > 0) {
         
-        if (_result.length > 1) {
+        if (_result.length > 1 && _sig_pair_high.length > 0) {
+            console.log(222);
             _result.push("此外，");
         }
 
@@ -638,7 +653,11 @@ var _create_conclusion = function (_result_div) {
     if (_null.length > 0) {
 
         if (_result.length > 1) {
-            if (_middle.length === 0) {
+            if (_middle.length === 0 && _sig_pair_high.length === 0) {
+                
+            }
+            else if (_middle.length === 0 && _sig_pair_high.length > 0) {
+                //console.log(111);
                 _result.push("此外，");
             }
             else {
@@ -668,6 +687,36 @@ var _create_conclusion = function (_result_div) {
     }
     else {
         _result.push("<br />相關分析到此結束。");
+    }
+    
+    if (_attr_list_count === 1 && $("#input_test_of_trend:checked").length === 1) {
+        var _cox_stu_msg = "Cox-Stuart趨勢分析結果顯示，" 
+                + "檢定統計量" + _cox_stuart_result.test_method + "為" + _cox_stuart_result.test_result + "，";
+        if (_cox_stuart_result.test_method === "P") {
+            if (_cox_stuart_result.is_sig === true) {
+                _cox_stu_msg = _cox_stu_msg + "小於0.025，表示該資料有特殊變化趨勢。";
+            }
+            else {
+                _cox_stu_msg = _cox_stu_msg + "大於或等於0.025，表示該資料無特殊變化趨勢。";
+            }
+        }
+        else {
+            if (_cox_stuart_result.is_sig === true) {
+                _cox_stu_msg = _cox_stu_msg + "大於或等於1.96，表示該資料有特殊變化趨勢。";
+            }
+            else {
+                _cox_stu_msg = _cox_stu_msg + "小於1.96，表示該資料無特殊變化趨勢。";
+            }
+        }
+        if (_cox_stuart_result.is_sig === true) {
+            if (_cox_stuart_result.is_growth === true) {
+                _cox_stu_msg = _cox_stu_msg + "趨勢為遞增。";
+            }
+            else {
+                _cox_stu_msg = _cox_stu_msg + "趨勢為遞減。";
+            }
+        }
+        _result.push('<br />' + _cox_stu_msg);
     }
     
     
@@ -707,14 +756,14 @@ var _create_conclusion = function (_result_div) {
     // pair result
     
     var _pair_result = $('<div><hr />'
-        + '顯著且高度或中度相關，非常具有參考價值：'
+        + '<div class="high">顯著且高度或中度相關，非常具有參考價值：'
         + '<table border="1" cellpadding="0" cellspacing="0" class="sig-table group0"><thead><tr><td>變數x</td><td>變數y</td><td>r</td><td>顯著</td></tr></thead><tbody></tbody></table>'
-        + '<hr />'
-        + '高度或中度相關，仍具有參考價值：'
+        + '</div>'
+        + '<div class="middle">高度或中度相關，仍具有參考價值：'
         + '<table cellpadding="0" cellspacing="0"  border="1" class="sig-table group1"><thead><tr><td>變數x</td><td>變數y</td><td>r</td><td>顯著</td></tr></thead><tbody></tbody></table>'
-        + '<hr />'
-        + '低度或無相關，參考價值不大：'
-        + '<table cellpadding="0" cellspacing="0"  border="1" class="sig-table group2"><thead><tr><td>變數x</td><td>變數y</td><td>r</td><td>顯著</td></tr></thead><tbody></tbody></table>'
+        + '</div>'
+        + '<div class="low">低度或無相關，參考價值不大：'
+        + '<table cellpadding="0" cellspacing="0"  border="1" class="sig-table group2"><thead><tr><td>變數x</td><td>變數y</td><td>r</td><td>顯著</td></tr></thead><tbody></tbody></table></div>'
         + '</div>').appendTo(_return_div);
     
     var _sig_pair_array = [_sig_pair_high, _sig_pair_middle, _sig_pair_low];
@@ -744,6 +793,16 @@ var _create_conclusion = function (_result_div) {
                 + '<td>' + _s.sig + '</td>'
                 + '</tr>').appendTo(_group_ul);
         }
+    }
+    
+    if (_pair_result.find('div.high table tbody tr').length === 0) {
+        _pair_result.find('div.high').hide();
+    }
+    if (_pair_result.find('div.middle table tbody tr').length === 0) {
+        _pair_result.find('div.middle').hide();
+    }
+    if (_pair_result.find('div.low table tbody tr').length === 0) {
+        _pair_result.find('div.low').hide();
     }
     
     // --------------------------------------
