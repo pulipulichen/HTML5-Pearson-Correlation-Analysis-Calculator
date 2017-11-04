@@ -104,3 +104,4 @@ var _d = [[74,10],
 [75,85]];
 console.log(pearsonCorrelation(_d));
 */
+

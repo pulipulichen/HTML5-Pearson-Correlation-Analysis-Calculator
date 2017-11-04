@@ -20,6 +20,7 @@ var _combine_input = function () {
 var _calc_pearson_correlation = function () {
     //var _result = "";
     var _attr_list = [];
+    var _attr_list_count = 0;
     var _panel = $(".file-process-framework");
     
     var _csv_lines = _panel.find("#input_data").val().trim().split("\n");
@@ -50,6 +51,7 @@ var _calc_pearson_correlation = function () {
             if (_i === 0) {
                 _data[_value] = [];
                 _attr_list[_j] = _value;
+                _attr_list_count++;
             }
             else {
                 if (isNaN(_value)) {
@@ -59,6 +61,26 @@ var _calc_pearson_correlation = function () {
                 _value = eval(_value);
                 _data[(_attr_list[_j])].push(_value);
             }
+        }
+    }
+    
+    if ($("#input_test_of_rank:checked").length === 1) {
+        for (var _attr_name in _data) {
+            var arr = _data[_attr_name];
+            var sorted = arr.slice().sort(function(a,b){return b-a})
+            var ranks = arr.slice().map(function(v){ return sorted.indexOf(v)+1 });
+            _data[_attr_name] = ranks;
+        }
+    }
+    
+    //console.log(_attr_list);
+    if (_attr_list_count === 1 && $("#input_test_of_trend:checked").length === 1) {
+        // 加入時間序號
+        var _value = 'time_index';
+        _data[_value] = [];
+        _attr_list[_j] = _value;
+        for (var _t = 1; _t < _csv_lines.length; _t++) {
+            _data[_value].push(_t);
         }
     }
     
