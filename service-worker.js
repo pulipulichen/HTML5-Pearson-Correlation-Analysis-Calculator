@@ -11,12 +11,12 @@
  limitations under the License.
  */
 
-/* global self, caches */
+/* global self, caches, Promise */
 
 // Names of the two caches used in this version of the service worker.
 // Change to v2, etc. when you update any of the local resources, which will
 // in turn trigger the install event again.
-const PRECACHE = 'precache-v2021-0119-053713';
+const PRECACHE = 'precache-v2021-0119-054309';
 const RUNTIME = 'runtime';
 
 /**
@@ -61,6 +61,9 @@ const PRECACHE_URLS = [
   'assets/favicon/generator/ms-icon-150x150.png',
   'assets/favicon/generator/ms-icon-310x310.png',
   'assets/favicon/generator/ms-icon-70x70.png',
+  'data/data-cox-stuart-10.csv',
+  'data/data-cox-stuart-30.csv',
+  'data/data-cox-stuart-30_sig.csv',
   'data/data-cpu.csv',
   'data/data-iris.csv',
   'data/data-library.csv',
@@ -68,6 +71,7 @@ const PRECACHE_URLS = [
   'data/data-wine.csv',
   'data/data.csv',
   'data/data2.csv',
+  'scripts/cox-stuart.js',
   'scripts/critz.js',
   'scripts/google-analytics.js',
   'scripts/pearsonCorrelation.js',

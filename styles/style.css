@@ -44,161 +44,167 @@ body {
 
 
 table {
-    border-collapse: initial !important;
-    border-spacing: 3px !important;
+  border-collapse: initial !important;
+  border-spacing: 3px !important;
 }
 
 table td {
-      vertical-align: top;
+  vertical-align: top;
 }
 
 .hide, #preview.hide {
-    display: none !important;
+  display: none !important;
 }
 
 .analyze-result {
-    margin-left: auto;
-    margin-right: auto;
-    /*text-align: center;*/
+  margin-left: auto;
+  margin-right: auto;
+  /*text-align: center;*/
 }
 
 .analyze-result {
-    margin-bottom: 1em;
+  margin-bottom: 1em;
 }
 
 .analyze-result table {
-    border: 2px solid black;
-    border-collapse: collapse !important;
-    border-spacing: 0;
+  border: 2px solid black;
+  border-collapse: collapse !important;
+  border-spacing: 0;
 }
 .analyze-result table thead th {
-    border-bottom-width: 2px; 
+  border-bottom-width: 2px; 
 }
 .analyze-result .right-border-bold {
-    border-right-width: 2px;
+  border-right-width: 2px;
 }
 
 .analyze-result .right-border-none {
-    border-right-width: 0 !important;
+  border-right-width: 0 !important;
 }
 .analyze-result .left-border-none {
-    border-left-width: 0 !important;
+  border-left-width: 0 !important;
+}
+.analyze-result .bottom-border-none {
+  border-bottom-width: 0 !important;
 }
 .analyze-result .bottom-border-thin,
 .analyze-result tr.bottom-border-thin td,
 .analyze-result tr.bottom-border-thin th {
-    border-bottom-width: 1px;
+  border-bottom-width: 1px;
 }
 
 .analyze-result tbody tr.row:last-of-type th,
 .analyze-result tbody tr.row:last-of-type td {
-    border-bottom-width: 0;
+  border-bottom-width: 0;
 }
 
 .analyze-result thead tr:first-of-type th,
 .analyze-result thead tr:first-of-type td {
-    border-top-width: 0;
+  border-top-width: 0;
 }
 
 .analyze-result .top-border-thin {
-    border-top-width: 1px;
+  border-top-width: 1px;
+}
+.analyze-result .top-border-none {
+  border-top-width: 0px;
 }
 
 .analyze-result .row.n > td {
-    border-bottom-width: 1px;
+  border-bottom-width: 1px;
 }
 
 .analyze-result th, 
 .analyze-result td {
-    word-break: keep-all;
-    font-weight: normal;
+  word-break: keep-all;
+  font-weight: normal;
 }
 
 .analyze-result .caption {
-    text-align: center;
+  text-align: center;
 }
 .analyze-result .note {
-    text-align: left;
-    display: block;
+  text-align: left;
+  display: block;
 }
 
 .analyze-result td {
-    text-align: right;
+  text-align: right;
 }
 
 .analyze-result .row > th:last-of-type {
-    border-right-width: 2px !important;
+  border-right-width: 2px !important;
 }
 
 .analyze-result table caption {
-    font-weight: bold;
-    margin-bottom: 0.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
 }
 
 .analyze-result table tbody tr th {
-    border-right-width: 2px;
+  border-right-width: 2px;
 }
 
 .analyze-result table td, 
 .analyze-result table th {
-    border: 1px solid black;
-    padding: 2px 5px;
+  border: 1px solid black;
+  padding: 2px 5px;
 }
 
 .analyze-result div {
-    display: inline-block;
+  display: inline-block;
 }
 
 .analyze-result .row td {
-    text-align: right;
+  text-align: right;
 }
 
 .analyze-result .row th {
-    text-align: left;
-    vertical-align: top;
+  text-align: left;
+  vertical-align: top;
 }
 
 .sortable > *,
 .sortable label {
-    cursor: move !important;
+  cursor: move !important;
 }
 
 .analyze-result tbody tr td,
 .analyze-result tbody tr th {
-    border-top: 0px solid black;
-    border-bottom: 0px solid black;
+  border-top: 0px solid black;
+  border-bottom: 0px solid black;
 }
 
 #variables_container .field label img {
-    height: 1em;
-    /*float:left;*/
+  height: 1em;
+  /*float:left;*/
 }
 
 .conclusion .speak {
-    float:left !important;
+  float:left !important;
 }
 
 .mode-ai {
-    display: none;
+  display: none;
 }
 
 .ai-conclusion {
-    text-align: center;
-    font-size: 2em;
-    line-height: 2em;
+  text-align: center;
+  font-size: 2em;
+  line-height: 2em;
 }
 
 .mode-ai .ai-conclusion button.speak {
-    float: none !important;
-    display: block;
-    margin: 0 auto;
+  float: none !important;
+  display: block;
+  margin: 0 auto;
 }
 
 table.sig-table {
-    border-collapse: collapse !important;
-    border-spacing: 0;
+  border-collapse: collapse !important;
+  border-spacing: 0;
 }
 
 table.sig-table td {
-    padding: 2px 5px;
+  padding: 2px 5px;
 }

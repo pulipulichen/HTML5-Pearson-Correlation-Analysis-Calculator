@@ -1,4 +1,6 @@
 
+/* global PULI_UTIL, tinyMCE, responsiveVoice */
+
 var _combine_input = function () {
   // 開頭設定
   _reset_result();
@@ -17,9 +19,12 @@ var _combine_input = function () {
 
 };	// var _combine_input = function () {
 
+_attr_list_count = 0;
+
 var _calc_pearson_correlation = function () {
   //var _result = "";
   var _attr_list = [];
+  _attr_list_count = 0;
   var _panel = $(".file-process-framework");
 
   var _csv_lines = _panel.find("#input_data").val().trim().split("\n");
@@ -54,6 +59,7 @@ var _calc_pearson_correlation = function () {
       if (_i === 0) {
         _data[_value] = [];
         _attr_list[_j] = _value;
+        _attr_list_count++;
       } else {
         if (isNaN(_value)) {
           //_attr_list.splice(_j, 1);
@@ -62,6 +68,30 @@ var _calc_pearson_correlation = function () {
         _value = eval(_value);
         _data[(_attr_list[_j])].push(_value);
       }
+    }
+  }
+
+  if ($("#input_test_of_rank:checked").length === 1) {
+    for (var _attr_name in _data) {
+      var arr = _data[_attr_name];
+      var sorted = arr.slice().sort(function (a, b) {
+        return b - a
+      })
+      var ranks = arr.slice().map(function (v) {
+        return sorted.indexOf(v) + 1
+      });
+      _data[_attr_name] = ranks;
+    }
+  }
+
+  //console.log(_attr_list);
+  if (_attr_list_count === 1 && $("#input_test_of_trend:checked").length === 1) {
+    // 加入時間序號
+    var _value = 'time_index';
+    _data[_value] = [];
+    _attr_list[_j] = _value;
+    for (var _t = 1; _t < _csv_lines.length; _t++) {
+      _data[_value].push(_t);
     }
   }
 
@@ -100,6 +130,7 @@ var _is_variable_selected = function (_attr) {
 };
 
 _data = {};
+_cox_stuart_result = null;
 
 var _get_attr_list = function () {
   var _attr_list = [];
@@ -174,7 +205,8 @@ var _draw_result_table = function () {
     _colspan = 1;
   }
 
-  var _table = $('<div style="display:inline-block;"><div class="caption" style="text-align:center;display:block">相關分析</div>'
+  var _table = $('<div style="display:inline-block;">'
+          + '<div class="caption" style="text-align:center;display:block">相關分析</div>'
           + '<table border="1" cellpadding="0" cellspacing="0">'
           //+ '<caption>' + "相關分析" + '</caption>'
           + '<thead><tr class="x-attr"><th colspan="' + _colspan + '" class="right-border-bold"></th></tr></thead>'
@@ -350,6 +382,22 @@ var _draw_result_table = function () {
 
   // ------------------------
 
+  if (_attr_list_count === 1 && $("#input_test_of_trend:checked").length === 1) {
+
+    for (var _attr_name in _data) {
+      if (_attr_name === "time_index") {
+        continue;
+      } else {
+        _cox_stuart_result = _test_of_trend_cox_stuart(_data[_attr_name]);
+        _result_div.append('<br />');
+        _result_div.append(_cox_stuart_result.table);
+        break;
+      }
+    }
+  }
+
+  // ------------------------
+
   _create_conclusion(_result_div).appendTo(_result_div);
 
   // -------------------------
@@ -380,7 +428,7 @@ var _create_conclusion = function (_result_div) {
         _attr_desc += "與";
       }
     }
-    _attr_desc += _attr_list[_i].split('_').join(' ')
+    _attr_desc += _attr_list[_i];
   }
 
   _result.push("<div>本研究使用積差相關分析來分析" + _attr_desc + "兩兩變項之間是否有線性相關。</div>");
@@ -388,7 +436,7 @@ var _create_conclusion = function (_result_div) {
   // ---------------------------
 
   for (var _i = 0; _i < _attr_list.length; _i++) {
-    var _name = _attr_list[_i].split('_').join(' ');
+    var _name = _attr_list[_i];
     var _tr = _result_div.find('.descriptive-table tr[var_name="' + _attr_list[_i] + '"]');
     _result.push(_name + "的平均數為" + _tr.find(".avg").text() + "，標準差為" + _tr.find(".stdev").text() + "，樣本數為" + _tr.find(".count").text() + "。");
   }
@@ -401,8 +449,8 @@ var _create_conclusion = function (_result_div) {
 
   _result_div.find('[correlation="high"][significant="true"]').each(function (_i, _td_r) {
     _td_r = $(_td_r);
-    var _x_var = _td_r.attr("x_var").split('_').join(' ');
-    var _y_var = _td_r.attr("y_var").split('_').join(' ');
+    var _x_var = _td_r.attr("x_var");
+    var _y_var = _td_r.attr("y_var");
     var _r = _td_r.attr("r");
     var _dir = _td_r.attr("dir");
     var _sig = (_td_r.attr("significant") === "true");
@@ -540,7 +588,8 @@ var _create_conclusion = function (_result_div) {
 
   if (_middle.length > 0) {
 
-    if (_result.length > 1) {
+    if (_result.length > 1 && _sig_pair_high.length > 0) {
+      console.log(222);
       _result.push("此外，");
     }
 
@@ -551,7 +600,11 @@ var _create_conclusion = function (_result_div) {
 
   // --------------------------
   var _sig_pair_low = [];
+  var _low = [];
+
+
   _result_div.find('[correlation="low"][significant="true"]').each(function (_i, _td_r) {
+    //console.log(1111);
     _td_r = $(_td_r);
     var _x_var = _td_r.attr("x_var");
     var _y_var = _td_r.attr("y_var");
@@ -561,7 +614,13 @@ var _create_conclusion = function (_result_div) {
 
     var _desc = _x_var + "與" + _y_var;
 
-    //_null.push(_desc);
+    if (_dir === "plus") {
+      _desc += "具有顯著的低度正相關";
+    } else {
+      _desc += "具有顯著的低度負相關";
+    }
+
+    _low.push(_desc);
 
     _sig_pair_low.push({
       x_var: _x_var.trim(),
@@ -570,6 +629,18 @@ var _create_conclusion = function (_result_div) {
       sig: _sig
     });
   });
+
+  if (_sig_pair_low.length > 0) {
+
+    if (_result.length > 1 && _sig_pair_high.length > 0 && _sig_pair_middle.length > 0) {
+      // console.log(222);
+      _result.push("此外，");
+    }
+
+    var _low_desc = _low.join("；") + "，但因為相關係數過低，僅供參考。";
+
+    _result.push(_low_desc);
+  }
 
   // ------------------------------
 
@@ -600,7 +671,10 @@ var _create_conclusion = function (_result_div) {
   if (_null.length > 0) {
 
     if (_result.length > 1) {
-      if (_middle.length === 0) {
+      if (_middle.length === 0 && _sig_pair_high.length === 0) {
+
+      } else if (_middle.length === 0 && _sig_pair_high.length > 0) {
+        //console.log(111);
         _result.push("此外，");
       } else {
         _result.push("最後，");
@@ -623,10 +697,36 @@ var _create_conclusion = function (_result_div) {
     _result.push(_desc);
   }
 
-  if (_result.length === 1) {
+  if (_result.length < 2) {
     _result = [];
   } else {
     _result.push("<br />相關分析到此結束。");
+  }
+
+  if (_attr_list_count === 1 && $("#input_test_of_trend:checked").length === 1) {
+    var _cox_stu_msg = "Cox-Stuart趨勢分析結果顯示，"
+            + "檢定統計量" + _cox_stuart_result.test_method + "為" + _cox_stuart_result.test_result + "，";
+    if (_cox_stuart_result.test_method === "P") {
+      if (_cox_stuart_result.is_sig === true) {
+        _cox_stu_msg = _cox_stu_msg + "小於0.025，表示該資料有特殊變化趨勢。";
+      } else {
+        _cox_stu_msg = _cox_stu_msg + "大於或等於0.025，表示該資料無特殊變化趨勢。";
+      }
+    } else {
+      if (_cox_stuart_result.is_sig === true) {
+        _cox_stu_msg = _cox_stu_msg + "大於或等於1.96，表示該資料有特殊變化趨勢。";
+      } else {
+        _cox_stu_msg = _cox_stu_msg + "小於1.96，表示該資料無特殊變化趨勢。";
+      }
+    }
+    if (_cox_stuart_result.is_sig === true) {
+      if (_cox_stuart_result.is_growth === true) {
+        _cox_stu_msg = _cox_stu_msg + "趨勢為遞增。";
+      } else {
+        _cox_stu_msg = _cox_stu_msg + "趨勢為遞減。";
+      }
+    }
+    _result.push('<br />' + _cox_stu_msg);
   }
 
 
@@ -666,14 +766,14 @@ var _create_conclusion = function (_result_div) {
   // pair result
 
   var _pair_result = $('<div><hr />'
-          + '顯著且高度或中度相關，非常具有參考價值：'
+          + '<div class="high">相關分析中顯著且高度或中度相關，非常具有參考價值：'
           + '<table border="1" cellpadding="0" cellspacing="0" class="sig-table group0"><thead><tr><td>變數x</td><td>變數y</td><td>r</td><td>顯著</td></tr></thead><tbody></tbody></table>'
-          + '<hr />'
-          + '高度或中度相關，仍具有參考價值：'
+          + '</div>'
+          + '<div class="middle">相關分析中高度或中度相關，仍具有參考價值：'
           + '<table cellpadding="0" cellspacing="0"  border="1" class="sig-table group1"><thead><tr><td>變數x</td><td>變數y</td><td>r</td><td>顯著</td></tr></thead><tbody></tbody></table>'
-          + '<hr />'
-          + '低度或無相關，參考價值不大：'
-          + '<table cellpadding="0" cellspacing="0"  border="1" class="sig-table group2"><thead><tr><td>變數x</td><td>變數y</td><td>r</td><td>顯著</td></tr></thead><tbody></tbody></table>'
+          + '</div>'
+          + '<div class="low">相關分析中低度或無相關，參考價值不大：'
+          + '<table cellpadding="0" cellspacing="0"  border="1" class="sig-table group2"><thead><tr><td>變數x</td><td>變數y</td><td>r</td><td>顯著</td></tr></thead><tbody></tbody></table></div>'
           + '</div>').appendTo(_return_div);
 
   var _sig_pair_array = [_sig_pair_high, _sig_pair_middle, _sig_pair_low];
@@ -702,6 +802,16 @@ var _create_conclusion = function (_result_div) {
               + '<td>' + _s.sig + '</td>'
               + '</tr>').appendTo(_group_ul);
     }
+  }
+
+  if (_pair_result.find('div.high table tbody tr').length === 0) {
+    _pair_result.find('div.high').hide();
+  }
+  if (_pair_result.find('div.middle table tbody tr').length === 0) {
+    _pair_result.find('div.middle').hide();
+  }
+  if (_pair_result.find('div.low table tbody tr').length === 0) {
+    _pair_result.find('div.low').hide();
   }
 
   // --------------------------------------
@@ -784,27 +894,27 @@ var _get_pearson_correlation = function (_ary1, _ary2) {
 };
 
 // -----------------------------------------------------
-/*
- tinyMCE.init({
- mode : "specific_textareas",
- editor_selector : "mceEditor",
- plugins: [
- 'advlist autolink lists link image charmap print preview hr anchor pagebreak',
- 'searchreplace wordcount visualblocks visualchars code fullscreen',
- 'insertdatetime media nonbreaking save table contextmenu directionality',
- 'emoticons template paste textcolor colorpicker textpattern imagetools codesample toc'
- ],
- toolbar1: 'undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image  tableprops',
- toolbar2: 'print preview media | forecolor backcolor emoticons | codesample code ',
- 
- setup:function(ed) {
- ed.on('change', function(e) {
- //console.log('the content ', ed.getContent());
- _combine_input();
- });
- }
- });
- */
+
+tinyMCE.init({
+  mode: "specific_textareas",
+  editor_selector: "mceEditor",
+  plugins: [
+    'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+    'searchreplace wordcount visualblocks visualchars code fullscreen',
+    'insertdatetime media nonbreaking save table contextmenu directionality',
+    'emoticons template paste textcolor colorpicker textpattern imagetools codesample toc'
+  ],
+  toolbar1: 'undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image  tableprops',
+  toolbar2: 'print preview media | forecolor backcolor emoticons | codesample code ',
+
+  setup: function (ed) {
+    ed.on('change', function (e) {
+      //console.log('the content ', ed.getContent());
+      _combine_input();
+    });
+  }
+});
+
 
 var _reset_result = function () {
 
@@ -1164,10 +1274,10 @@ $(function () {
   //$('.menu .item').tab();
 
   if (location.href.indexOf("?ai=t") === -1) {
-    _load_data("#input_data", "data/data.csv", _combine_input);
+    _load_data("#input_data", "data.csv", _combine_input);
   } else {
     $("button.mode:first").click();
-    _load_data("#input_data", "data/data2.csv", _combine_input);
+    _load_data("#input_data", "data2.csv", _combine_input);
   }
 
 
