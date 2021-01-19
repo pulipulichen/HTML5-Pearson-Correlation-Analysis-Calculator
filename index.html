@@ -1,9 +1,4 @@
 <!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
 <html>
     <head>
         <title>
@@ -12,22 +7,41 @@ and open the template in the editor.
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="styles/style.css" />
         
-<link rel="stylesheet" href="//pulipulichen.github.io/blogger/posts/2016/12/semantic/semantic.min.css" />
-<link rel="stylesheet" href="font-awesome.css" />
+<link rel="stylesheet" href="vendors/semantic-ui/semantic.min.css" />
+<link rel="stylesheet" href="styles/font-awesome.css" />
+
+    <link rel="apple-touch-icon" sizes="57x57" href="assets/favicon/generator/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="assets/favicon/generator/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="assets/favicon/generator/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="assets/favicon/generator/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="assets/favicon/generator/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="assets/favicon/generator/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="assets/favicon/generator/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="assets/favicon/generator/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/generator/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="assets/favicon/generator/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/generator/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="assets/favicon/generator/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/generator/favicon-16x16.png">
+    <meta name="msapplication-TileColor" content="#1ABC9C">
+    <meta name="msapplication-TileImage" content="assets/favicon/generator/ms-icon-144x144.png">
+    <meta name="theme-color" content="#1ABC9C">
+    <link rel="manifest" href="./manifest.json">
+    
     </head>
     <body>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
-<script src="//pulipulichen.github.io/blogger/posts/2016/12/semantic/semantic.min.js"></script>
-<script src="http://pulipulichen.github.io/blogger/posts/2016/12/puli-util.clipboard.js"></script>
-<script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
+<script src="vendors/jquery/jquery.min.js"></script>
+<script src="vendors/semantic-ui/semantic.min.js"></script>
+<script src="vendors/puli-utils/puli-util.clipboard.js"></script>
+<!-- <script src="//cdn.tinymce.com/4/tinymce.min.js"></script> -->
 
-<script src="statistics-distributions.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script src="script.js"></script>
+<script src="scripts/statistics-distributions.js"></script>
+<script src="vendors/jquery-ui/jquery-ui.js"></script>
+<script src="scripts/script.js"></script>
 
-<script src='https://code.responsivevoice.org/responsivevoice.js'></script>
+<script src='vendors/responsivevoice/responsivevoice.js'></script>
 
 <!-- ------------------------------------------------------------ -->
 
@@ -201,7 +215,7 @@ and open the template in the editor.
 <div class="mode-ai">
     <button type="button" class="mode" onclick="$('.mode-ai').hide();$('.mode-report').show();">切換到詳細報表模式</button>
     <div style="text-align:center">
-        <img src="1-1412060R620.png" />
+        <img src="assets/1-1412060R620.png" />
     </div>
     
     <div class="ai-conclusion"></div>
@@ -209,7 +223,7 @@ and open the template in the editor.
         <div class="field">
             <label for="input_file">
                 請上傳CSV檔案：
-                (<a href="data2.csv">範例檔案下載</a>)
+                (<a href="data/data2.csv">範例檔案下載</a>)
             </label>
             <input type="file" class="file-change-trigger" data-file-to-textarea="#input_data" />
         </div>
@@ -218,15 +232,8 @@ and open the template in the editor.
 </form>
 
 <!-- ------------------------------------------------------------ -->
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-37178375-7', 'auto');
-  ga('send', 'pageview');
-
+<script src="scripts/google-analytics.js"></script>
+  <script src="./scripts/service-worker-loader.js"></script>
 </script>
 
     </body>
