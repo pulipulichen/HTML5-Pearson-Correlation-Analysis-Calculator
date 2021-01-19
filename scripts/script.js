@@ -895,6 +895,7 @@ var _get_pearson_correlation = function (_ary1, _ary2) {
 
 // -----------------------------------------------------
 
+/*
 tinyMCE.init({
   mode: "specific_textareas",
   editor_selector: "mceEditor",
@@ -914,7 +915,7 @@ tinyMCE.init({
     });
   }
 });
-
+*/
 
 var _reset_result = function () {
 
@@ -1274,10 +1275,10 @@ $(function () {
   //$('.menu .item').tab();
 
   if (location.href.indexOf("?ai=t") === -1) {
-    _load_data("#input_data", "data.csv", _combine_input);
+    _load_data("#input_data", "data/data.csv", _combine_input);
   } else {
     $("button.mode:first").click();
-    _load_data("#input_data", "data2.csv", _combine_input);
+    _load_data("#input_data", "data/data2.csv", _combine_input);
   }
 
 
